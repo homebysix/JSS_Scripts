@@ -29,7 +29,7 @@
 ####################################################################################################
 #
 # HISTORY
-#  Version: 1.2
+#	Version: 1.2
 #	- Added code by Ross Hamilton for function checkExistingBinding
 #	Version: 1.1
 #	- Fixed syntax in Functions; bindADCheck, moveHome, killFullscreen
