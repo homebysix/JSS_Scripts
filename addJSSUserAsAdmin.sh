@@ -69,14 +69,14 @@ done
 function getJSSInformationen0() {
 /usr/bin/curl -k -u $apiusername:$apipassword $jssbase/JSSResource/computers/macaddress/$en0 -X GET | xmllint --format - >> /tmp/computerInfo.xml
 jssUsername="$(cat /tmp/computerInfo.xml | xpath //computer/location/username | sed -e 's/\<username>//g; s/\<\/username>//g')"
-rm -r /tmp/computerInfo.xml
+/bin/rm -f /tmp/computerInfo.xml
 }
 
 
 function getJSSInformationen1() {
 /usr/bin/curl -k -u $apiusername:$apipassword $jssbase/JSSResource/computers/macaddress/$en1 -X GET | xmllint --format - >> /tmp/computerInfo.xml
 jssUsername="$(cat /tmp/computerInfo.xml | xpath //computer/location/username | sed -e 's/\<username>//g; s/\<\/username>//g')"
-rm -r /tmp/computerInfo.xml
+/bin/rm -f /tmp/computerInfo.xml
 }
 
 ####################################################################################################
@@ -94,11 +94,11 @@ if [[ "$jssUsername" != "" ]]; then
 		if [ "`/usr/bin/dsmemberutil checkmembership -U $currentUser -G admin`" != "user is a member of the group" ]; then
 			/usr/bin/dscl . merge /Groups/admin GroupMembership $currentUser
 		else
-			"$currentUser is already an admin"
+			/bin/echo "$currentUser is already an admin"
 		fi
 	else
-		echo "JSS Username:$jssUsername does not match Current Username:$currentUser"
+		/bin/echo "JSS Username:$jssUsername does not match Current Username:$currentUser"
 	fi
 else
-	echo "Unable to find a valid MAC in JSS $en0,$en1"
+	/bin/echo "Unable to find a valid MAC in JSS $en0,$en1"
 fi
