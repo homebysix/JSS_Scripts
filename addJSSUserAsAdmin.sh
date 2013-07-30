@@ -1,5 +1,5 @@
-#!/bin/bash
-########################################################################################################
+#!/bin/sh
+############################################################################################################
 #
 # Copyright (c) 2013, JAMF Software, LLC.  All rights reserved.
 #
@@ -25,7 +25,27 @@
 #       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #       SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-####################################################################################################
+############################################################################################################
+#
+# ABOUT THIS PROGRAM
+#
+# NAME
+#  addJSSUserAsAdmin.sh -- Pulls JSS Username record for computer and elevates the permissions to local admin
+#  if the current user is a match.
+#
+# SYNOPSIS
+#	addJSSUserAsAdmin.sh
+#	MSOffice11SetFirstRun.sh <mountPoint> <computerName> <loginUsername> <apiusername> <apipassword> <jssbase>
+#
+# DESCRIPTION
+#	This script does an API call to JSS, retrieves Location>Username and elevates the user to Admin
+#	if the current user matches the JSS Username.
+#
+############################################################################################################
+#
+# 2013-05-24--Created by Bram Cohen
+#
+############################################################################################################
 
 # HARDCODED VARIABLES
 apiusername="" # Username that has API privileges for 'Peripherals'
@@ -33,18 +53,15 @@ apipassword="" # Password for User that has API privileges for 'Peripherals'
 jssbase="" # JSS base url e.g. "https://yourJSSurl:8443"
 
 # CHECK FOR SCRIPT PARAMETERS IN JSS
-if [ "$4" != "" ] && [ "$apiusername" == "" ]
-then
-  apiusername="$4"
+if [ "$4" != "" ] && [ "$apiusername" == "" ]; then
+	apiusername="$4"
 fi
 
-if [ "$5" != "" ] && [ "$apipassword" == "" ]
-then
+if [ "$5" != "" ] && [ "$apipassword" == "" ]; then
 	apipassword="$5"
 fi
 
-if [ "$6" != "" ] && [ "$jssbase" == "" ]
-then
+if [ "$6" != "" ] && [ "$jssbase" == "" ]; then
 	jssbase="$6"
 fi
 
@@ -52,8 +69,10 @@ fi
 # SCRIPT FUNCTIONS -  - DO NOT MODIFY BELOW THIS LINE
 ####################################################################################################
 
+#Get Current Username
 currentUser="$(/usr/bin/stat -f '%u %Su' /dev/console | awk '{print $2}')"
 
+#Get Active Interfaces
 function getInterface() {
 # Get interfaces Ethernet Addresses 
 for iface in  `ifconfig -lu` ; do
@@ -66,13 +85,14 @@ for iface in  `ifconfig -lu` ; do
 done
 }
 
+#Get Computer Details for interface en0
 function getJSSInformationen0() {
 /usr/bin/curl -k -u $apiusername:$apipassword $jssbase/JSSResource/computers/macaddress/$en0 -X GET | xmllint --format - >> /tmp/computerInfo.xml
 jssUsername="$(cat /tmp/computerInfo.xml | xpath //computer/location/username | sed -e 's/\<username>//g; s/\<\/username>//g')"
 /bin/rm -f /tmp/computerInfo.xml
 }
 
-
+#Get Computer Details for interface en1
 function getJSSInformationen1() {
 /usr/bin/curl -k -u $apiusername:$apipassword $jssbase/JSSResource/computers/macaddress/$en1 -X GET | xmllint --format - >> /tmp/computerInfo.xml
 jssUsername="$(cat /tmp/computerInfo.xml | xpath //computer/location/username | sed -e 's/\<username>//g; s/\<\/username>//g')"
