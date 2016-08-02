@@ -30,7 +30,7 @@
 # ABOUT THIS PROGRAM
 #
 # NAME
-#  MSOffice11SetFirstRun.sh -- Dismisses first run dialogs in MS Office 2011 deployements
+#  MSOffice11SetFirstRun.sh -- Dismisses first run dialogs in MS Office 2011 deployments
 #
 # SYNOPSIS
 #	MSOffice11SetFirstRun.sh
